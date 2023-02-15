@@ -3,13 +3,13 @@
 getCityData = function () {
     // Get JSON
 let url = 'https://s3-us-west-2.amazonaws.com/cdt-web-storage/cities.json';
-    fetch(url)
-        .then(res => res.json())
-        .then(cities =>
-            document.querySelector('.table').appendChild(makeTable(cities))
+  fetch(url)
+    .then(res => res.json())
+    .then(cities =>
+      document.querySelector('.table').appendChild(makeTable(cities))
 )
     .catch(err => { throw err });
-}
+ }
 
 function makeTable(cities) {
  cities = addDistanceToJson(cities);
