@@ -84,6 +84,8 @@ function addRows(json, keys) {
 
 
 sort = function () {
+    // homes.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
+
 
     const getCellValue = (tr, idx) => tr.children[idx].innerText || tr.children[idx].textContent;
 
