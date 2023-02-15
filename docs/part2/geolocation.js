@@ -47,13 +47,13 @@ function addHeaders() {
 
     let thead = document.createElement('thead');
         let tr = document.createElement('tr');
-    let th1 = createHeaderTH("CityName")
+    let th1 = createHeaderTH("City Name")
        let th2 = createHeaderTH("Latitude")
     let th3 = createHeaderTH("Logitude")
-       let th4 = createHeaderTH("Distance from OSU in Miles")
+       let th4 = createHeaderTH("Distance from OSU in Miles, Double-click to sort")
 
     tr.appendChild(th1);
-        tr.appendChild(th2);
+    tr.appendChild(th2);
     tr.appendChild(th3);
     tr.appendChild(th4);
 
@@ -84,22 +84,21 @@ function addRows(json, keys) {
 
 
 sort = function () {
-    // homes.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
+  // homes.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
+const getCellValue = (tr, idx) => tr.children[idx].innerText || tr.children[idx].textContent;
 
-
-    const getCellValue = (tr, idx) => tr.children[idx].innerText || tr.children[idx].textContent;
-
-    const comparer = (idx, asc) => (a, b) => ((v1, v2) =>
-        v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2) ? v1 - v2 : v1.toString().localeCompare(v2)
-    )(getCellValue(asc ? a : b, idx), getCellValue(asc ? b : a, idx));
-
-    document.querySelectorAll('th').forEach(th => th.addEventListener('click', (() => {
-        const table = th.closest('table');
-        Array.from(table.querySelectorAll('tr:nth-child(n+2)'))
-            .sort(comparer(Array.from(th.parentNode.children).indexOf(th), this.asc = !this.asc))
-            .forEach(tr => table.appendChild(tr));
-    })));
-}
+const comparer = (idx, asc) => (a, b) => ((v1, v2) => 
+    v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2) ? v1 - v2 : v1.toString().localeCompare(v2)
+)(getCellValue(asc ? a : b, idx), getCellValue(asc ? b : a, idx));
+  
+  document.querySelectorAll('th').forEach(th => th.addEventListener('click', (() => {
+    const table = th.closest('table');
+    const tbody = table.querySelector('tbody');
+    Array.from(tbody.querySelectorAll('tr'))
+      .sort(comparer(Array.from(th.parentNode.children).indexOf(th), this.asc = !this.asc))
+      .forEach(tr => tbody.appendChild(tr));
+  })))
+};
 
 
 function distance(lat1, lon1, lat2, lon2, unit) {
