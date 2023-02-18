@@ -14,7 +14,8 @@ let url = 'https://s3-us-west-2.amazonaws.com/cdt-web-storage/cities.json';
 function makeTable(cities) {
  cities = addDistanceToJson(cities);
   var table = document.createElement('table');
-    var keys = getKeysFromArray(cities);
+  table.setAttribute("id", "geoTable");
+  var keys = getKeysFromArray(cities);
   table.appendChild(addHeaders());
   table.appendChild(addRows(cities, keys));
   return table;
@@ -50,7 +51,7 @@ function addHeaders() {
     let th1 = createHeaderTH("City Name")
        let th2 = createHeaderTH("Latitude")
     let th3 = createHeaderTH("Logitude")
-       let th4 = createHeaderTH("Distance from OSU in Miles, Double-click to sort")
+       let th4 = createHeaderTH("Distance from OSU in Miles")
 
     tr.appendChild(th1);
     tr.appendChild(th2);
@@ -83,22 +84,68 @@ function addRows(json, keys) {
 
 
 
-sort = function () {
-  // homes.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
-const getCellValue = (tr, idx) => tr.children[idx].innerText || tr.children[idx].textContent;
+// sort = function () {
+//   // homes.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
+// const getCellValue = (tr, idx) => tr.children[idx].innerText || tr.children[idx].textContent;
 
-const comparer = (idx, asc) => (a, b) => ((v1, v2) => 
-    v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2) ? v1 - v2 : v1.toString().localeCompare(v2)
-)(getCellValue(asc ? a : b, idx), getCellValue(asc ? b : a, idx));
+// const comparer = (idx, asc) => (a, b) => ((v1, v2) => 
+//     v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2) ? v1 - v2 : v1.toString().localeCompare(v2)
+// )(getCellValue(asc ? a : b, idx), getCellValue(asc ? b : a, idx));
   
-  document.querySelectorAll('th').forEach(th => th.addEventListener('click', (() => {
-    const table = th.closest('table');
-    const tbody = table.querySelector('tbody');
-    Array.from(tbody.querySelectorAll('tr'))
-      .sort(comparer(Array.from(th.parentNode.children).indexOf(th), this.asc = !this.asc))
-      .forEach(tr => tbody.appendChild(tr));
-  })))
-};
+//   document.querySelectorAll('th').forEach(th => th.addEventListener('click', (() => {
+//     const table = th.closest('table');
+//     const tbody = table.querySelector('tbody');
+//     Array.from(tbody.querySelectorAll('tr'))
+//       .sort(comparer(Array.from(th.parentNode.children).indexOf(th), this.asc = !this.asc))
+//       .forEach(tr => tbody.appendChild(tr));
+//   })))
+// };
+
+
+  function sortAsc() {
+  var table, rows, switching, i, x, y, shouldSwitch;
+    table = document.getElementById("geoTable");
+  switching = true;
+  while (switching) {
+    switching = false;
+    rows = table.rows;
+    for (i = 1; i < (rows.length - 1); i++) {
+      shouldSwitch = false;
+      x = rows[i].getElementsByTagName("TD")[3];
+      y = rows[i + 1].getElementsByTagName("TD")[3];
+      if (Math.round(x.innerHTML) > Math.round(y.innerHTML)) {
+        shouldSwitch = true;
+        break;
+      }
+    }
+    if (shouldSwitch) {
+      rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+      switching = true;
+    }
+  }
+  }
+  function sortDesc() {
+  var table, rows, switching, i, x, y, shouldSwitch;
+    table = document.getElementById("geoTable");
+  switching = true;
+  while (switching) {
+    switching = false;
+    rows = table.rows;
+    for (i = 1; i < (rows.length - 1); i++) {
+      shouldSwitch = false;
+      x = rows[i].getElementsByTagName("TD")[3];
+      y = rows[i + 1].getElementsByTagName("TD")[3];
+      if (Math.round(x.innerHTML) < Math.round(y.innerHTML)) {
+        shouldSwitch = true;
+        break;
+      }
+    }
+    if (shouldSwitch) {
+      rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+      switching = true;
+    }
+  }
+}
 
 
 function distance(lat1, lon1, lat2, lon2, unit) {
@@ -120,5 +167,7 @@ function distance(lat1, lon1, lat2, lon2, unit) {
 		if (unit=="K") { dist = dist * 1.609344 }
         if (unit == "N") { dist = dist * 0.8684 }
 		return dist;
-	}
+  }
+  
+
 }
